@@ -11,10 +11,10 @@ const mensagensFechamento = [
   { hora: "21:03", audio: "21HORA" },
   { hora: "21:05", audio: "21HORA" },
 ];
-
 function tocarAudio(nome, velocidade = 1) {
   return new Promise((resolve, reject) => {
-    const audio = new Audio(`/audios/${nome.toUpperCase()}.mp3`);
+    const caminho = import.meta.env.BASE_URL + `audios/${nome.toUpperCase()}.mp3`;
+    const audio = new Audio(caminho);
     audio.playbackRate = velocidade;
     audio.play()
       .then(() => {
