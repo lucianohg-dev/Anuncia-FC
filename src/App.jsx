@@ -2,14 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 const mensagensFechamento = [
-  { hora: "08:00", audio: "ABERTURA" },
-  { hora: "20:40", audio: "20E40" },
-  { hora: "20:50", audio: "20E50" },
-  { hora: "20:55", audio: "20E55" },
-  { hora: "21:00", audio: "21HORA" },
-  { hora: "21:01", audio: "21HORA" },
-  { hora: "21:03", audio: "21HORA" },
-  { hora: "21:05", audio: "21HORA" },
+  { hora: "08:00", audio: "ABERTURA.mp3" },
+  { hora: "20:40", audio: "20E40.mp3" },
+  { hora: "20:50", audio: "20E50.mp3" },
+  { hora: "20:55", audio: "20E55.mp3" },
+  { hora: "21:00", audio: "21HORA.mp3" },
+  { hora: "21:01", audio: "21HORA.mp3" },
+  { hora: "21:03", audio: "21HORA.mp3" },
+  { hora: "21:05", audio: "21HORA.mp3" },
 ];
 function tocarAudio(nome, velocidade = 1) {
   return new Promise((resolve, reject) => {
