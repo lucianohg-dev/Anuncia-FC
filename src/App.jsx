@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 const mensagensFechamento = [
-  { hora: "08:00", audio: "abertura" },
+  { hora: "09:29", audio: "abertura" },
   { hora: "20:40", audio: "faltando20" },
   { hora: "20:50", audio: "faltando10" },
   { hora: "20:55", audio: "faltando5" },
@@ -13,10 +13,12 @@ const mensagensFechamento = [
 ];
 function tocarAudio(nome, velocidade = 1) {
   return new Promise((resolve, reject) => {
-    const caminho = import.meta.env.BASE_URL + `audios/${nome.toLowerCase()}.mp3`;
+    const caminho =
+      import.meta.env.BASE_URL + `audios/${nome.toLowerCase()}.mp3`;
     const audio = new Audio(caminho);
     audio.playbackRate = velocidade;
-    audio.play()
+    audio
+      .play()
       .then(() => {
         audio.onended = resolve;
       })
@@ -86,7 +88,10 @@ export default function App() {
   }, [historicoPlacas]);
 
   useEffect(() => {
-    localStorage.setItem("horariosAgendados", JSON.stringify(horariosAgendados));
+    localStorage.setItem(
+      "horariosAgendados",
+      JSON.stringify(horariosAgendados)
+    );
   }, [horariosAgendados]);
 
   // Verificação fechamento e agendamentos
@@ -96,7 +101,8 @@ export default function App() {
       const minuto = horaAtual.getMinutes().toString().padStart(2, "0");
       const chave = `${hora}:${minuto}`;
 
-      if (processandoAviso.current || isTocando || avisosEnviados[chave]) return;
+      if (processandoAviso.current || isTocando || avisosEnviados[chave])
+        return;
 
       const aviso = mensagensFechamento.find((m) => m.hora === chave);
       if (aviso) {
@@ -117,7 +123,8 @@ export default function App() {
       const minuto = horaAtual.getMinutes().toString().padStart(2, "0");
       const chave = `${hora}:${minuto}`;
 
-      if (processandoAviso.current || isTocando || avisosEnviados[chave]) return;
+      if (processandoAviso.current || isTocando || avisosEnviados[chave])
+        return;
 
       const agendamento = horariosAgendados.find((h) => h.hora === chave);
       if (agendamento) {
@@ -222,145 +229,183 @@ export default function App() {
   };
 
   return (
-    <div className="layout">
-      <main className="App" aria-label="Área principal do Anuncia-FC">
-        <h1 className="cabecalho-fixo">Anuncia-FC</h1>
-        <p className="hora-atual" aria-live="polite">🕒 Hora atual: {horaAtual.toLocaleTimeString()}</p>
+    <>
+      <div className="layout-tri">
+        {/* Coluna Esquerda: input, botões e fala */}
+        <div className="coluna-esquerda">
+          <h1 className="cabecalho-fixo">Anuncia-FC</h1>
+          <p className="hora-atual" aria-live="polite">
+            🕒 Hora atual: {horaAtual.toLocaleTimeString()}
+          </p>
 
-        <section className="placa-container" aria-label="Anunciar placa">
-          <input
-            type="text"
-            aria-label="Digite a placa"
-            value={placa}
-            maxLength={7}
-            onChange={(e) => setPlaca(e.target.value.toUpperCase())}
-            placeholder="Digite a placa (ex: ABC1234)"
-            disabled={isTocando}
-          />
-          <button
-            className="placa"
-            onClick={() => tocarPlacaCompleta()}
-            disabled={isTocando || placa.length < 7}
-            aria-disabled={isTocando || placa.length < 7}
-            title="Anunciar placa"
-          >
-            🔊 Anunciar
-          </button>
-        </section>
-
-        <section className="acoes-rapidas" aria-label="Ações rápidas">
-          <button
-            className="brigadista"
-            onClick={chamarBrigadista}
-            disabled={isTocando}
-          >
-            ➕ Brigadista
-          </button>
-
-          <button
-            id="Pessoa"
-            onClick={anunciarPessoaPerdida}
-            disabled={isTocando}
-          >
-            🧒 Pessoa Perdida
-          </button>
-        </section>
-
-        <section className="fala-personalizada" aria-label="Falar texto personalizado">
-          <h2>💬 Falar Texto Personalizado</h2>
-          <textarea
-            rows={4}
-            placeholder="Digite uma mensagem para ser falada..."
-            value={mensagemFalada}
-            onChange={(e) => setMensagemFalada(e.target.value)}
-            disabled={isTocando}
-            aria-label="Mensagem para falar"
-          />
-          <button
-            onClick={falarMensagemComVoz}
-            disabled={isTocando || !mensagemFalada.trim()}
-          >
-            🗣️ Falar Mensagem
-          </button>
-        </section>
-
-        <section className="agendar-audio" aria-label="Agendar áudio por horário">
-          <h2>📅 Agendar Áudio por Horário</h2>
-          <div className="agendar-inputs">
-            <input
-              type="time"
-              value={novoHorario}
-              onChange={(e) => setNovoHorario(e.target.value)}
-              disabled={isTocando}
-              aria-label="Horário para agendar"
-            />
+          <section className="placa-container" aria-label="Anunciar placa">
             <input
               type="text"
-              placeholder="Nome do áudio (sem .mp3)"
-              value={novoAudio}
-              onChange={(e) => setNovoAudio(e.target.value)}
+              aria-label="Digite a placa"
+              value={placa}
+              maxLength={7}
+              onChange={(e) => setPlaca(e.target.value.toUpperCase())}
+              placeholder="Digite a placa (ex: ABC1234)"
               disabled={isTocando}
-              aria-label="Nome do áudio"
             />
             <button
-              className="agendarbt"
-              onClick={adicionarHorario}
+              id="btnanuncia"
+              className="placa"
+              onClick={() => tocarPlacaCompleta()}
+              disabled={isTocando || placa.length < 7}
+              title="Anunciar placa"
+            >
+              🔊 Anunciar
+            </button>
+          </section>
+
+          <section className="acoes-rapidas" aria-label="Ações rápidas">
+            <button
+              className="brigadista"
+              onClick={chamarBrigadista}
               disabled={isTocando}
             >
-              ➕ Agendar
+              ➕ Brigadista
             </button>
-          </div>
+            <button
+              id="Pessoa"
+              onClick={anunciarPessoaPerdida}
+              disabled={isTocando}
+            >
+              🧒 Pessoa Perdida
+            </button>
+          </section>
 
-          {horariosAgendados.length > 0 && (
+          <section
+            className="fala-personalizada"
+            aria-label="Falar texto personalizado"
+          >
+            <h2>💬 Falar Texto Personalizado</h2>
+            <textarea
+              rows={4}
+              placeholder="Digite uma mensagem para ser falada..."
+              value={mensagemFalada}
+              onChange={(e) => setMensagemFalada(e.target.value)}
+              disabled={isTocando}
+              aria-label="Mensagem para falar"
+            />
+            <button
+              onClick={falarMensagemComVoz}
+              disabled={isTocando || !mensagemFalada.trim()}
+            >
+              🗣️ Falar Mensagem
+            </button>
+          </section>
+        </div>
+
+        {/* Coluna Centro: histórico de placas */}
+        <div className="coluna-centro">
+          <section
+            className="historico"
+            aria-label="Histórico de placas anunciadas"
+          >
+            <h2>📋 Placas Anunciadas</h2>
+            {historicoPlacas.length > 0 && (
+              <button
+                id="limpaHistor"
+                onClick={limparHistorico}
+                disabled={isTocando}
+                aria-label="Limpar todo o histórico"
+              >
+                🗑️ Limpar histórico
+              </button>
+            )}
+            {historicoPlacas.length === 0 && (
+              <p>Nenhuma placa anunciada ainda.</p>
+            )}
             <ul>
-              {horariosAgendados.map((item, index) => (
+              {historicoPlacas.map((item, index) => (
                 <li key={index}>
-                  <span>{item.hora} → {item.audio}</span>
+                  <strong>{item.placa}</strong> às {item.hora}
                   <button
-                    onClick={() => removerHorario(index)}
-                    aria-label={`Remover agendamento de ${item.hora} para áudio ${item.audio}`}
+                    id="placaplay"
+                    onClick={() => tocarPlacaCompleta(item.placa)}
                     disabled={isTocando}
+                    aria-label={`Reproduzir anúncio da placa ${item.placa}`}
                   >
-                    ❌
+                    🔁 Play
                   </button>
                 </li>
               ))}
             </ul>
-          )}
-        </section>
-      </main>
+          </section>
+        </div>
 
-      <aside className="historico" aria-label="Histórico de placas anunciadas">
-        <h2>📋 Placas Anunciadas</h2>
-        {historicoPlacas.length > 0 && (
-          <button
-            id="limpaHistor"
-            onClick={limparHistorico}
-            disabled={isTocando}
-            aria-label="Limpar todo o histórico"
+        {/* Coluna Direita: agendamentos */}
+        <div className="coluna-direita">
+          <section
+            className="agendar-audio"
+            aria-label="Agendar áudio por horário"
           >
-            🗑️ Limpar histórico
-          </button>
-        )}
-
-        {historicoPlacas.length === 0 && <p>Nenhuma placa anunciada ainda.</p>}
-
-        <ul>
-          {historicoPlacas.map((item, index) => (
-            <li key={index}>
-              <strong>{item.placa}</strong> às {item.hora}
-              <button
-                id="placaplay"
-                onClick={() => tocarPlacaCompleta(item.placa)}
+            <h2 id="AgendarÁudio">📅 Agendar Áudio por Horário</h2>
+            <div className="agendar-inputs">
+              <input
+                id="time"
+                type="time"
+                value={novoHorario}
+                onChange={(e) => setNovoHorario(e.target.value)}
                 disabled={isTocando}
-                aria-label={`Reproduzir anúncio da placa ${item.placa}`}
-              >
-                🔁 Play
-              </button>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    </div>
+              />
+
+         <div className="caixa-lista">
+  <h1 id="listaudio">Lista de áudios</h1>
+  <u>abertura</u>
+  <br />
+  <u>fechamento</u>
+  <br />
+  <div className="agendar-linha">
+    <input
+      id="text"
+      type="text"
+      placeholder=" Nome do áudio"
+      value={novoAudio}
+      onChange={(e) => setNovoAudio(e.target.value)}
+      disabled={isTocando}
+    />
+    <button
+      id="agendarbt"
+      onClick={adicionarHorario}
+      disabled={isTocando}
+    >
+      ➕ Agendar
+    </button>
+  </div>
+</div>
+
+            </div>
+
+            {horariosAgendados.length > 0 && (
+              <ul>
+                {horariosAgendados.map((item, index) => (
+                  <li key={index}>
+                    <span>
+                      {item.hora} → {item.audio}
+                    </span>
+                    <button
+                      onClick={() => removerHorario(index)}
+                      aria-label={`Remover agendamento de ${item.hora} para áudio ${item.audio}`}
+                      disabled={isTocando}
+                    >
+                      ❌
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      </div>
+
+      {/* Rodapé fixo */}
+      <footer className="rodape">
+        &copy; {new Date().getFullYear()} Anuncia-FC. Sistema desenvolvido
+        internamente pela equipe de Prevenção de Perdas.
+      </footer>
+    </>
   );
 }
